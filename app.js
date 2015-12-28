@@ -6,11 +6,11 @@ var bcrypt = require('bcrypt');
 var app = express();
 
 var CONFIG = require('./config.json');
-var PORT = CONFIG.server.port;
+var PORT = parseInt(CONFIG.server.port, 10);
 var HOST_NAME = CONFIG.server.hostName;
 var DATABASE_NAME = CONFIG.database.name;
 var TOKEN_SECRET = CONFIG.token.secret;
-var TOKEN_EXPIRES = CONFIG.token.expiresInSeconds;
+var TOKEN_EXPIRES = parseInt(CONFIG.token.expiresInSeconds, 10);
 var User = require('./models/user');
 
 app.use(bodyParser.json());
@@ -73,7 +73,7 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
       // if user is found and password is right
       // create a token
       var token = jsonwebtoken.sign({ username: user.username }, TOKEN_SECRET, {
-        expiresIn: parseInt(TOKEN_EXPIRES, 10)
+        expiresIn: TOKEN_EXPIRES
       });
 
       // return the information including token as JSON
