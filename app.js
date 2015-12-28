@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
 var app = express();
 
 var CONFIG = require('./config.json');
@@ -45,31 +46,43 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
         message: 'Authentication failed. User not found.'
       });
 
-    } else if (user) {
+      return;
+    }
 
-      // check if password matches
-      if (user.password !== request.body.password) {
+    bcrypt.compare(request.body.password, user.password, function (error, result) {
+
+      if (error) {
+        response.status(500).json({
+          success: false,
+          message: 'Internal server error'
+        });
+
+        throw error;
+      }
+
+      if (! result) {
 
         response.status(401).json({
           success: false,
           message: 'Authentication failed. Wrong password.'
         });
 
-      } else {
-
-        // if user is found and password is right
-        // create a token
-        var token = jsonwebtoken.sign({ username: user.username }, TOKEN_SECRET, {
-          expiresIn: TOKEN_EXPIRES
-        });
-
-        // return the information including token as JSON
-        response.json({
-          success: true,
-          token: token
-        });
+        return;
       }
-    }
+
+      // if user is found and password is right
+      // create a token
+      var token = jsonwebtoken.sign({ username: user.username }, TOKEN_SECRET, {
+        expiresIn: parseInt(TOKEN_EXPIRES, 10)
+      });
+
+      // return the information including token as JSON
+      response.json({
+        success: true,
+        token: token
+      });
+
+    });
   });
 });
 
@@ -98,12 +111,7 @@ apiRouter.post('/users/', function createUser(request, response) {
       return;
     }
 
-    var user = new User({
-      username: request.body.username,
-      password: request.body.password
-    });
-
-    user.save(function (error) {
+    bcrypt.genSalt(10, function (error, salt) {
 
       if (error) {
         response.status(500).json({
@@ -114,8 +122,37 @@ apiRouter.post('/users/', function createUser(request, response) {
         throw error;
       }
 
-      response.json({
-        success: true
+      bcrypt.hash(request.body.password, salt, function (error, hash) {
+
+        if (error) {
+          response.status(500).json({
+            success: false,
+            message: 'Internal server error'
+          });
+
+          throw error;
+        }
+
+        var user = new User({
+          username: request.body.username,
+          password: hash
+        });
+
+        user.save(function (error) {
+
+          if (error) {
+            response.status(500).json({
+              success: false,
+              message: 'Internal server error'
+            });
+
+            throw error;
+          }
+
+          response.json({
+            success: true
+          });
+        });
       });
     });
   });
@@ -132,6 +169,7 @@ apiRouter.use(function verifyToken(request, response, next) {
 
     // verifies secret and checks exp
     jsonwebtoken.verify(token, TOKEN_SECRET, function (error, decoded) {
+
       if (error) {
 
         response.status(403).json({
@@ -140,14 +178,12 @@ apiRouter.use(function verifyToken(request, response, next) {
         });
 
         return;
-
-      } else {
-
-        // if everything is good, save to request for use in other routes
-        request.decoded = decoded;
-
-        next();
       }
+
+      // if everything is good, save to request for use in other routes
+      request.decoded = decoded;
+
+      next();
     });
 
   } else {

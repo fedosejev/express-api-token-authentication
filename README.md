@@ -54,3 +54,4 @@ Example of a token string: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI
 ## References
 
 + https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
++ https://jwt.io
