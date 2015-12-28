@@ -1,0 +1,26 @@
+{
+  "name": "express-api-token-authentication",
+  "version": "1.0.0",
+  "description": "Example of token based authentication with Node.js, Express.js, MongoDB and Mongoose.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedosejev/express-api-token-authentication.git"
+  },
+  "author": "Artemij Fedosejev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fedosejev/express-api-token-authentication/issues"
+  },
+  "homepage": "https://github.com/fedosejev/express-api-token-authentication",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^5.4.1",
+    "mongoose": "^4.3.4"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "server": {
+    "hostName": "localhost",
+    "port": "8080"
+  },
+  "token": {
+    "secret": "secretapplication",
+    "expiresInSeconds": "3600"
+  },
+  "database": {
+    "name": "example"
+  }
+}
