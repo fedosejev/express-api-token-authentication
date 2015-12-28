@@ -22,7 +22,7 @@ mongoose.connect('mongodb://' + HOST_NAME + '/' + DATABASE_NAME);
 var apiRouter = express.Router();
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
-apiRouter.post('/users/authenticate', function (request, response) {
+apiRouter.post('/users/authenticate', function authenticateUser(request, response) {
 
   // find the user
   User.findOne({
@@ -73,7 +73,7 @@ apiRouter.post('/users/authenticate', function (request, response) {
   });
 });
 
-apiRouter.post('/users/', function (request, response) {
+apiRouter.post('/users/', function createUser(request, response) {
 
   // find the user
   User.findOne({
@@ -122,7 +122,7 @@ apiRouter.post('/users/', function (request, response) {
 });
 
 // route middleware to verify a token
-apiRouter.use(function (request, response, next) {
+apiRouter.use(function verifyToken(request, response, next) {
 
   // check header or url parameters or post parameters for token
   var token = request.body.token || request.query.token || request.headers['x-access-token'];
@@ -161,7 +161,7 @@ apiRouter.use(function (request, response, next) {
   }
 });
 
-apiRouter.get('/items/', function (request, response) {
+apiRouter.get('/items/', function getAllItems(request, response) {
 
   response.json({
     success: true
