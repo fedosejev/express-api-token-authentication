@@ -9,31 +9,20 @@ var schema = new Schema({
     unique: true,
     default: shortid.generate
   },
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  tickets: [{
+  event: {
     type: Schema.Types.ObjectId,
-    ref: 'Ticket'
-  }],
-  events: [{
+    ref: 'Event',
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  createdBy: {
     type: Schema.Types.ObjectId,
-    ref: 'Event'
-  }],
+    ref: 'User',
+    required: true
+  },
   createdAt: {
     type: Date
   },
@@ -58,4 +47,4 @@ schema.pre('save', function (next) {
   next();
 });
 
-module.exports = mongoose.model('User', schema, 'users');
+module.exports = mongoose.model('Ticket', schema, 'tickets');
