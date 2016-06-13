@@ -7,7 +7,7 @@ var Ticket = require('../models/ticket');
 
 var router = express.Router();
 
-router.get('/:ticketId', tokenMiddleware.verifyToken, function getEvent(request, response) {
+router.get('/:ticketId', tokenMiddleware.verifyToken, function getTicket(request, response) {
 
   console.log(request.params);
 
